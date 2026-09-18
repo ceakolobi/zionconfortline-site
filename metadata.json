@@ -1,0 +1,7 @@
+{
+  "name": "Zion Confort Line",
+  "description": "Portal corporativo, e-commerce multissetorial, CRM comercial, portal do cliente com telemetria solar e central administrativa.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
