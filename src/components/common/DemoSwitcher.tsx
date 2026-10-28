@@ -122,21 +122,22 @@ export const DemoSwitcher: React.FC = () => {
                 quickLoginAs('client');
                 setIsExpanded(false);
               }}
-              className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl transition-all ${
-                currentUser?.role === 'CLIENTE'
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold'
-                  : 'bg-slate-800/60 hover:bg-slate-800 text-slate-300 border border-transparent'
-              }`}
+              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl transition-all bg-slate-800/60 hover:bg-slate-800 text-slate-300 border border-slate-700/60"
             >
               <div className="flex items-center gap-2">
                 <UserCheck className="w-4 h-4 text-emerald-400" />
                 <div className="text-left">
-                  <div className="font-medium">Portal do Cliente</div>
-                  <div className="text-[10px] text-slate-400">cliente@demo.local (Telemetria Solar)</div>
+                  <div className="font-medium flex items-center gap-1.5">
+                    <span>Portal do Cliente</span>
+                    <span className="text-[9px] px-1 py-0.2 rounded bg-amber-950 text-amber-300 font-bold">
+                      Bloqueado
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-slate-400">Senhas em fase de implantação</div>
                 </div>
               </div>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
-                /cliente
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                Restrito
               </span>
             </button>
 
@@ -146,21 +147,22 @@ export const DemoSwitcher: React.FC = () => {
                 quickLoginAs('seller');
                 setIsExpanded(false);
               }}
-              className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl transition-all ${
-                currentUser?.role === 'VENDEDOR'
-                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold'
-                  : 'bg-slate-800/60 hover:bg-slate-800 text-slate-300 border border-transparent'
-              }`}
+              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl transition-all bg-slate-800/60 hover:bg-slate-800 text-slate-300 border border-slate-700/60"
             >
               <div className="flex items-center gap-2">
                 <Briefcase className="w-4 h-4 text-amber-400" />
                 <div className="text-left">
-                  <div className="font-medium">Portal do Vendedor</div>
-                  <div className="text-[10px] text-slate-400">vendedor@demo.local (CRM & Comissões)</div>
+                  <div className="font-medium flex items-center gap-1.5">
+                    <span>Portal do Vendedor</span>
+                    <span className="text-[9px] px-1 py-0.2 rounded bg-amber-950 text-amber-300 font-bold">
+                      Bloqueado
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-slate-400">Senhas em fase de implantação</div>
                 </div>
               </div>
               <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
-                /vendedor
+                Restrito
               </span>
             </button>
 
@@ -180,7 +182,7 @@ export const DemoSwitcher: React.FC = () => {
                 <ShieldCheck className="w-4 h-4 text-rose-400" />
                 <div className="text-left">
                   <div className="font-medium">Painel Administrativo</div>
-                  <div className="text-[10px] text-slate-400">admin@demo.local (Controle Total)</div>
+                  <div className="text-[10px] text-slate-400">Senha: admin@admin.com</div>
                 </div>
               </div>
               <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">
@@ -189,7 +191,7 @@ export const DemoSwitcher: React.FC = () => {
             </button>
 
             <div className="pt-2 text-[10px] text-slate-400 text-center border-t border-slate-800/80">
-              Dados fictícios devidamente identificados como DEMO
+              Plataforma Zion • Portais Restritos & Painel Admin com Login
             </div>
           </div>
         )}

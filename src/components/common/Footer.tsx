@@ -15,7 +15,7 @@ import { generateWhatsAppUrl } from '../../utils/whatsapp';
 import { LgpdModal } from '../legal/LgpdModal';
 
 export const Footer: React.FC = () => {
-  const { navigateTo } = useApp();
+  const { navigateTo, brandSettings } = useApp();
   const [legalModalType, setLegalModalType] = useState<'privacy' | 'terms' | 'lgpd' | 'cookies' | null>(null);
 
   const whatsappUrl = generateWhatsAppUrl({ type: 'geral' });
@@ -63,19 +63,74 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-800 text-xs">
         {/* Col 1: About */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg">
-              <Sun className="w-6 h-6 text-slate-950" />
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5 font-display font-extrabold text-xl text-white">
-                ZION <span className="text-amber-400 font-light">CONFORT</span>
+          {(() => {
+            const footerConfig = brandSettings?.footerLogo?.useCustom
+              ? brandSettings.footerLogo
+              : {
+                  coloredUrl: brandSettings?.headerLogo?.coloredUrl || '',
+                  whiteUrl: brandSettings?.headerLogo?.whiteUrl || '',
+                  heightPx: brandSettings?.footerLogo?.heightPx || 40,
+                  variantMode: brandSettings?.footerLogo?.variantMode || 'white',
+                  showBrandText: brandSettings?.footerLogo?.showBrandText ?? true,
+                };
+
+            // Rodapé possui fundo escuro permanente (bg-slate-950)
+            let activeFooterLogoUrl = '';
+            if (footerConfig.variantMode === 'colored') {
+              activeFooterLogoUrl = footerConfig.coloredUrl || footerConfig.whiteUrl;
+            } else if (footerConfig.variantMode === 'white') {
+              activeFooterLogoUrl = footerConfig.whiteUrl || footerConfig.coloredUrl;
+            } else {
+              // 'auto' modo em fundo escuro: prioriza a logo branca/clara
+              activeFooterLogoUrl = footerConfig.whiteUrl || footerConfig.coloredUrl;
+            }
+
+            return (
+              <div
+                onClick={() => navigateTo('home')}
+                className="flex items-center gap-3 cursor-pointer select-none group"
+              >
+                {activeFooterLogoUrl ? (
+                  <img
+                    src={activeFooterLogoUrl}
+                    alt="Zion Confort Line"
+                    style={{ height: `${footerConfig.heightPx}px` }}
+                    className="w-auto object-contain transition-all duration-200 group-hover:scale-102"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLElement).style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: `${footerConfig.heightPx}px`,
+                      height: `${footerConfig.heightPx}px`,
+                    }}
+                    className="rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shrink-0 group-hover:scale-105 transition-transform"
+                  >
+                    <Sun
+                      style={{
+                        width: `${Math.max(16, Math.round(footerConfig.heightPx * 0.6))}px`,
+                        height: `${Math.max(16, Math.round(footerConfig.heightPx * 0.6))}px`,
+                      }}
+                      className="text-slate-950"
+                    />
+                  </div>
+                )}
+
+                {footerConfig.showBrandText && (
+                  <div>
+                    <div className="flex items-center gap-1.5 font-display font-extrabold text-xl text-white">
+                      ZION <span className="text-amber-400 font-light">CONFORT</span>
+                    </div>
+                    <div className="text-[10px] tracking-[0.25em] text-slate-400 font-semibold uppercase">
+                      Line Solutions
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="text-[10px] tracking-[0.25em] text-slate-400 font-semibold uppercase">
-                Line Solutions
-              </div>
-            </div>
-          </div>
+            );
+          })()}
 
           <p className="text-slate-400 leading-relaxed max-w-sm">
             A <strong>Zion Confort Line</strong> une engenharia solar de alta performance, produtos de tecnologia,

@@ -4,33 +4,44 @@ import { X, Lock, ShieldCheck, Briefcase, UserCheck, ArrowRight, Sparkles } from
 import { DEMO_USERS } from '../../data/mockData';
 
 export const AuthModal: React.FC = () => {
-  const { isAuthModalOpen, setIsAuthModalOpen, quickLoginAs, navigateTo } = useApp();
-  const [emailInput, setEmailInput] = useState('cliente@demo.local');
-  const [passwordInput, setPasswordInput] = useState('demo123456');
+  const { isAuthModalOpen, setIsAuthModalOpen, navigateTo, loginAdmin, adminCredentials, showNotification } = useApp();
+  const [emailInput, setEmailInput] = useState('admin@admin.com');
+  const [passwordInput, setPasswordInput] = useState('admin@admin.com');
+  const [errorMsg, setErrorMsg] = useState('');
 
   if (!isAuthModalOpen) return null;
 
   const handleManualLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (emailInput.includes('admin')) {
-      quickLoginAs('admin');
-      navigateTo('admin');
-    } else if (emailInput.includes('vendedor')) {
-      quickLoginAs('seller');
-      navigateTo('vendedor');
+    setErrorMsg('');
+
+    if (emailInput.toLowerCase().includes('admin')) {
+      const res = loginAdmin(emailInput, passwordInput);
+      if (res.success) {
+        setIsAuthModalOpen(false);
+        navigateTo('admin');
+      } else {
+        setErrorMsg('E-mail ou senha de administrador incorretos.');
+      }
     } else {
-      quickLoginAs('client');
+      // Client or seller area is locked
+      setIsAuthModalOpen(false);
       navigateTo('cliente');
+      showNotification('A área do cliente está bloqueada temporariamente aguardando liberação de senhas.', 'info');
     }
-    setIsAuthModalOpen(false);
   };
 
   const selectQuickProfile = (role: 'admin' | 'seller' | 'client') => {
-    quickLoginAs(role);
     setIsAuthModalOpen(false);
-    if (role === 'admin') navigateTo('admin');
-    else if (role === 'seller') navigateTo('vendedor');
-    else if (role === 'client') navigateTo('cliente');
+    if (role === 'admin') {
+      navigateTo('admin');
+    } else if (role === 'client') {
+      navigateTo('cliente');
+      showNotification('A área do cliente está bloqueada aguardando configuração de senhas.', 'info');
+    } else {
+      navigateTo('vendedor');
+      showNotification('A área do vendedor está bloqueada aguardando configuração de senhas.', 'info');
+    }
   };
 
   return (
@@ -56,7 +67,7 @@ export const AuthModal: React.FC = () => {
           </div>
           <h3 className="font-display text-xl font-bold text-slate-900">Acesso à Plataforma Zion</h3>
           <p className="text-xs text-slate-500 mt-1">
-            Selecione um dos perfis de demonstração abaixo ou faça login com suas credenciais.
+            Entre no Painel Administrativo ou consulte o status de acesso dos portais.
           </p>
         </div>
 
@@ -64,55 +75,49 @@ export const AuthModal: React.FC = () => {
         <div className="space-y-2.5 mb-6">
           <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1">
             <Sparkles className="w-3 h-3 text-amber-500" />
-            Acesso Rápido Demonstrativo:
+            Portais do Sistema:
           </div>
 
           <button
-            onClick={() => selectQuickProfile('client')}
-            className="w-full flex items-center justify-between p-3 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-50 text-slate-800 transition-all group"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-xs">
-                <UserCheck className="w-4 h-4" />
-              </div>
-              <div className="text-left text-xs">
-                <div className="font-bold text-emerald-950">Portal do Cliente</div>
-                <div className="text-[11px] text-slate-500">cliente@demo.local (Telemetria Solar)</div>
-              </div>
-            </div>
-            <ArrowRight className="w-4 h-4 text-emerald-600 group-hover:translate-x-1 transition-transform" />
-          </button>
-
-          <button
-            onClick={() => selectQuickProfile('seller')}
-            className="w-full flex items-center justify-between p-3 rounded-xl border border-amber-200 bg-amber-50/50 hover:bg-amber-50 text-slate-800 transition-all group"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-amber-600 text-white flex items-center justify-center shadow-xs">
-                <Briefcase className="w-4 h-4" />
-              </div>
-              <div className="text-left text-xs">
-                <div className="font-bold text-amber-950">Portal do Vendedor</div>
-                <div className="text-[11px] text-slate-500">vendedor@demo.local (CRM & Comissões)</div>
-              </div>
-            </div>
-            <ArrowRight className="w-4 h-4 text-amber-600 group-hover:translate-x-1 transition-transform" />
-          </button>
-
-          <button
             onClick={() => selectQuickProfile('admin')}
-            className="w-full flex items-center justify-between p-3 rounded-xl border border-rose-200 bg-rose-50/50 hover:bg-rose-50 text-slate-800 transition-all group"
+            className="w-full flex items-center justify-between p-3 rounded-xl border border-rose-200 bg-rose-50/50 hover:bg-rose-50 text-slate-800 transition-all group cursor-pointer"
           >
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-rose-600 text-white flex items-center justify-center shadow-xs">
                 <ShieldCheck className="w-4 h-4" />
               </div>
               <div className="text-left text-xs">
-                <div className="font-bold text-rose-950">Painel Administrativo</div>
-                <div className="text-[11px] text-slate-500">admin@demo.local (Gestão Total & APIs)</div>
+                <div className="font-bold text-rose-950 flex items-center gap-1.5">
+                  <span>Painel Administrativo</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-rose-200 text-rose-900 font-bold">
+                    Com Senha
+                  </span>
+                </div>
+                <div className="text-[11px] text-slate-500">Login: {adminCredentials.email}</div>
               </div>
             </div>
             <ArrowRight className="w-4 h-4 text-rose-600 group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          <button
+            onClick={() => selectQuickProfile('client')}
+            className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-100 text-slate-800 transition-all group cursor-pointer opacity-90"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-slate-600 text-white flex items-center justify-center shadow-xs">
+                <UserCheck className="w-4 h-4" />
+              </div>
+              <div className="text-left text-xs">
+                <div className="font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>Área do Cliente</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold">
+                    Bloqueado
+                  </span>
+                </div>
+                <div className="text-[11px] text-slate-500">Senhas em processo de liberação técnica</div>
+              </div>
+            </div>
+            <Lock className="w-4 h-4 text-amber-600 group-hover:scale-110 transition-transform" />
           </button>
         </div>
 

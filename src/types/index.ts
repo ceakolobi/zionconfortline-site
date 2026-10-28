@@ -239,3 +239,24 @@ export interface BlogPost {
   author: string;
   tags: string[];
 }
+
+export type LogoVariantMode = 'auto' | 'colored' | 'white';
+
+export interface LogoItemConfig {
+  coloredUrl: string;
+  whiteUrl: string;
+  heightPx: number;
+  variantMode: LogoVariantMode;
+  showBrandText: boolean;
+}
+
+export interface BrandSettings {
+  headerLogo: LogoItemConfig;
+  footerLogo: LogoItemConfig & { useCustom: boolean };
+}
+
+export interface AdminCredentials {
+  email: string;
+  password: string;
+  updatedAt?: string;
+}

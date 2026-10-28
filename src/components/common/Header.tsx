@@ -54,6 +54,7 @@ export const Header: React.FC = () => {
     theme,
     toggleTheme,
     setSelectedCategory,
+    brandSettings,
   } = useApp();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -264,28 +265,81 @@ export const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo / Brand container */}
-          <div
-            id="brand-logo"
-            onClick={() => navigateTo('home')}
-            className="flex items-center gap-3 cursor-pointer select-none group flex-shrink-0"
-          >
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform duration-200">
-              <Sun className="w-7 h-7 text-slate-950 animate-spin-slow" />
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-display font-extrabold text-xl sm:text-2xl tracking-tight text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-300 transition-colors">
-                  ZION
-                </span>
-                <span className="font-display font-light text-xl sm:text-2xl tracking-wider text-amber-500 dark:text-amber-400">
-                  CONFORT
-                </span>
+          {(() => {
+            const headerLogoConfig = brandSettings?.headerLogo || {
+              coloredUrl: '',
+              whiteUrl: '',
+              heightPx: 44,
+              variantMode: 'auto',
+              showBrandText: true,
+            };
+
+            let activeHeaderLogoUrl = '';
+            if (headerLogoConfig.variantMode === 'white') {
+              activeHeaderLogoUrl = headerLogoConfig.whiteUrl || headerLogoConfig.coloredUrl;
+            } else if (headerLogoConfig.variantMode === 'colored') {
+              activeHeaderLogoUrl = headerLogoConfig.coloredUrl || headerLogoConfig.whiteUrl;
+            } else {
+              // 'auto' mode: in dark mode use white logo, in light mode use colored logo
+              activeHeaderLogoUrl =
+                theme === 'dark'
+                  ? headerLogoConfig.whiteUrl || headerLogoConfig.coloredUrl
+                  : headerLogoConfig.coloredUrl || headerLogoConfig.whiteUrl;
+            }
+
+            return (
+              <div
+                id="brand-logo"
+                onClick={() => navigateTo('home')}
+                className="flex items-center gap-3 cursor-pointer select-none group flex-shrink-0"
+              >
+                {activeHeaderLogoUrl ? (
+                  <img
+                    src={activeHeaderLogoUrl}
+                    alt="Zion Confort Line"
+                    style={{ height: `${headerLogoConfig.heightPx}px` }}
+                    className="w-auto object-contain transition-all duration-200 group-hover:scale-102"
+                    onError={(e) => {
+                      // Fallback if image fails to load
+                      (e.currentTarget as HTMLElement).style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: `${headerLogoConfig.heightPx}px`,
+                      height: `${headerLogoConfig.heightPx}px`,
+                    }}
+                    className="rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform duration-200 shrink-0"
+                  >
+                    <Sun
+                      style={{
+                        width: `${Math.max(16, Math.round(headerLogoConfig.heightPx * 0.6))}px`,
+                        height: `${Math.max(16, Math.round(headerLogoConfig.heightPx * 0.6))}px`,
+                      }}
+                      className="text-slate-950 animate-spin-slow"
+                    />
+                  </div>
+                )}
+
+                {headerLogoConfig.showBrandText && (
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-display font-extrabold text-xl sm:text-2xl tracking-tight text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-300 transition-colors">
+                        ZION
+                      </span>
+                      <span className="font-display font-light text-xl sm:text-2xl tracking-wider text-amber-500 dark:text-amber-400">
+                        CONFORT
+                      </span>
+                    </div>
+                    <div className="text-[10px] tracking-[0.25em] text-slate-500 dark:text-slate-400 font-semibold uppercase">
+                      Line Solutions
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="text-[10px] tracking-[0.25em] text-slate-500 dark:text-slate-400 font-semibold uppercase">
-                Line Solutions
-              </div>
-            </div>
-          </div>
+            );
+          })()}
 
           {/* Desktop nav links with Dropdown Submenus */}
           <nav

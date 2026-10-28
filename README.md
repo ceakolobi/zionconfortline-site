@@ -61,22 +61,35 @@ A **Zion Confort Line** é uma solução completa desenvolvida para integrar o e
   - Métodos de pagamento: **PIX com QR Code dinâmico**, **Cartão de Crédito** (com parcelamento) e **Boleto Bancário**.
   - Simulação de pedido confirmado com código de rastreio e envio de comprovante via WhatsApp.
 
-### 4. Portal do Cliente (Telemetria Solar)
-- **Visão Geral da Usina**: Status de operação em tempo real (*Online/Gerando*), potência instantânea e geração do dia/mês/total.
-- **Gráficos de Desempenho**: Comparativo de geração real vs. estimada ao longo dos meses.
-- **Faturas e Histórico**: Download de faturas de energia, créditos acumulados junto à concessionária e comprovantes de garantia dos equipamentos.
-- **Abertura de Chamados**: Canal direto com o suporte técnico para vistorias ou manutenções.
+### 4. Portal do Cliente (Área Restrita / Em Configuração)
+- **Status Atual**: Bloqueado com tela de proteção informativa.
+- **Acesso com Senha**: Em fase final de homologação técnica. Os clientes e parceiros receberão senhas individuais de acesso para acompanhar telemetria solar, faturas e garantias.
+- **Canais de Atendimento**: Botão direto para suporte e esclarecimento de dúvidas via WhatsApp.
 
-### 5. Portal do Vendedor (CRM & Comissões)
-- **Funil de Vendas / Leads**: Gestão de clientes em prospecção, em elaboração de proposta e fechados.
-- **Simulador de Comissões**: Cálculo automático da margem de ganho sobre vendas de usinas e produtos de loja.
-- **Gerador de Propostas Rápidas**: Emissão de orçamentos padronizados para envio via WhatsApp ou e-mail.
-- **Metas do Mês**: Barra de progresso com bonificações e desempenho individual.
+### 5. Portal do Vendedor (Área Restrita / Em Configuração)
+- **Status Atual**: Bloqueado temporariamente para implantação de credenciais de acesso corporativo.
 
-### 6. Painel Administrativo (Admin)
+### 6. Painel Administrativo (Autenticação & Controle Total)
+- **Autenticação Obrigatória**:
+  - **Login Padrão**: `admin@admin.com`
+  - **Senha Padrão**: `admin@admin.com`
+  - Tela de autenticação exclusiva (`AdminLoginGate`) com preenchimento rápido demonstrativo e validação em tempo real.
+- **Alteração Dinâmica de Credenciais**:
+  - O administrador autenticado pode alterar tanto o **e-mail de login** quanto a **senha** diretamente na aba **Usuários & RBAC / Segurança & Senha**.
+  - Persistência das novas credenciais via `localStorage` (`zion_admin_auth`).
+  - Botão de restauração das credenciais padrão caso necessário (`admin@admin.com`).
+  - Botão de encerramento seguro de sessão (*Logout*).
 - **Métricas Gerais**: Faturamento acumulado, ticket médio, número de propostas ativas e estoque.
 - **Gerenciamento de Produtos (CRUD)**: Criação, edição, exclusão e controle de estoque de produtos e kits solares.
 - **Gestão de Pedidos**: Alteração de status (*Pendente, Pago, Em Transporte, Entregue*).
+- **Gestão de Logotipos & Identidade Visual (White-Label)**:
+  - Personalização de logotipos para Cabeçalho (*Header*) e Rodapé (*Footer*).
+  - Suporte a versão **Colorida** (para temas claros) e versão **Branca/Clara** (para temas escuros/noturnos).
+  - Upload direto de arquivos locais (conversão automática em Base64 Data URL) ou inserção de URLs externas.
+  - Seletor de tamanho com controle deslizante de altura em pixels (de 24px a 72px) e atalhos rápidos (*Pequeno, Médio, Grande, Extra Grande*).
+  - Regras inteligentes de contraste: alternância automática com base no tema ativo, ou forçar exibição permanente.
+  - Simulador interativo em tempo real para pré-visualização instantânea no tema claro, escuro e rodapé antes de salvar.
+  - Persistência das preferências via `localStorage`.
 - **Configurações Globais**: Atualização de dados de contato, telefones de WhatsApp e banners.
 
 ---

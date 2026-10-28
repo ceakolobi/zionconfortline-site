@@ -13,6 +13,7 @@ import {
   AuditLog,
   BlogPost,
   User,
+  BrandSettings,
 } from '../types';
 
 export const DEMO_USERS: Record<string, User> = {
@@ -990,3 +991,21 @@ export const MOCK_FAQS = [
     answer: 'Disponibilizamos um CRM completo com gestão de funil de leads, acompanhamento de cotações, cálculo de comissões por produto e serviço com total transparência e materiais de venda atualizados.',
   },
 ];
+
+export const DEFAULT_BRAND_SETTINGS: BrandSettings = {
+  headerLogo: {
+    coloredUrl: '',
+    whiteUrl: '',
+    heightPx: 44,
+    variantMode: 'auto',
+    showBrandText: true,
+  },
+  footerLogo: {
+    useCustom: false,
+    coloredUrl: '',
+    whiteUrl: '',
+    heightPx: 40,
+    variantMode: 'white',
+    showBrandText: true,
+  },
+};

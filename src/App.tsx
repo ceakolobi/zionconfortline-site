@@ -25,6 +25,8 @@ import {
 import { ClientPortal } from './pages/ClientPortal';
 import { SellerDashboard } from './pages/SellerDashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { AdminLoginGate } from './components/auth/AdminLoginGate';
+import { LockedAccessScreen } from './components/auth/LockedAccessScreen';
 
 // Toast Notification
 import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
@@ -67,7 +69,7 @@ const ToastNotification: React.FC = () => {
 };
 
 const MainContent: React.FC = () => {
-  const { activeRoute } = useApp();
+  const { activeRoute, isAdminAuthenticated } = useApp();
 
   const renderCurrentView = () => {
     switch (activeRoute) {
@@ -92,11 +94,11 @@ const MainContent: React.FC = () => {
       case 'contato':
         return <ContactPage />;
       case 'cliente':
-        return <ClientPortal />;
+        return <LockedAccessScreen area="cliente" />;
       case 'vendedor':
-        return <SellerDashboard />;
+        return <LockedAccessScreen area="vendedor" />;
       case 'admin':
-        return <AdminDashboard />;
+        return isAdminAuthenticated ? <AdminDashboard /> : <AdminLoginGate />;
       default:
         return <HomePage />;
     }

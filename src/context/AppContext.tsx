@@ -15,6 +15,7 @@ import {
   LeadStatus,
   OrderStatus,
   SolarTelemetryData,
+  BrandSettings,
 } from '../types';
 import {
   DEMO_USERS,
@@ -29,6 +30,7 @@ import {
   MOCK_WEBHOOKS,
   MOCK_AUDIT_LOGS,
   MOCK_CLIENT_TELEMETRY,
+  DEFAULT_BRAND_SETTINGS,
 } from '../data/mockData';
 
 interface AppContextType {
@@ -94,12 +96,72 @@ interface AppContextType {
   addNewProduct: (product: Partial<Product> & { name: string; price: number; category: string }) => void;
   deleteProduct: (productId: string) => void;
   approveCommission: (commissionId: string) => void;
+  brandSettings: BrandSettings;
+  updateBrandSettings: (updater: Partial<BrandSettings> | ((prev: BrandSettings) => BrandSettings)) => void;
+  resetBrandSettings: () => void;
+  adminCredentials: { email: string; password: string };
+  isAdminAuthenticated: boolean;
+  loginAdmin: (email: string, pass: string) => { success: boolean; message?: string };
+  updateAdminCredentials: (newEmail: string, newPassword: string) => { success: boolean; message?: string };
+  resetAdminCredentials: () => void;
+  logout: () => void;
 }
+
+const DEFAULT_ADMIN_CREDS = {
+  email: 'admin@admin.com',
+  password: 'admin@admin.com',
+};
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(DEMO_USERS.client);
+  const [adminCredentials, setAdminCredentials] = useState<{ email: string; password: string }>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('zion_admin_auth');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.email && parsed.password) {
+            return { email: parsed.email, password: parsed.password };
+          }
+        } catch (e) {
+          // ignore error
+        }
+      }
+    }
+    return DEFAULT_ADMIN_CREDS;
+  });
+
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('zion_admin_logged_in') === 'true';
+    }
+    return false;
+  });
+
+  const [currentUser, setCurrentUser] = useState<User | null>(() => {
+    if (typeof window !== 'undefined') {
+      const isLoggedIn = localStorage.getItem('zion_admin_logged_in') === 'true';
+      if (isLoggedIn) {
+        let email = 'admin@admin.com';
+        const savedAuth = localStorage.getItem('zion_admin_auth');
+        if (savedAuth) {
+          try {
+            const parsed = JSON.parse(savedAuth);
+            if (parsed.email) email = parsed.email;
+          } catch (e) {}
+        }
+        return {
+          id: 'usr_admin',
+          name: 'Administrador Master',
+          email,
+          role: 'ADMIN',
+          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+        };
+      }
+    }
+    return null;
+  });
   const [activeRoute, setActiveRoute] = useState<string>('home');
   const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
   const [categories] = useState<Category[]>(MOCK_CATEGORIES);
@@ -131,6 +193,48 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
     return 'dark';
   });
+
+  // Brand Logo Settings with localStorage persistence
+  const [brandSettings, setBrandSettingsState] = useState<BrandSettings>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('zion_brand_settings');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return {
+            ...DEFAULT_BRAND_SETTINGS,
+            ...parsed,
+            headerLogo: { ...DEFAULT_BRAND_SETTINGS.headerLogo, ...(parsed.headerLogo || {}) },
+            footerLogo: { ...DEFAULT_BRAND_SETTINGS.footerLogo, ...(parsed.footerLogo || {}) },
+          };
+        }
+      } catch (err) {
+        console.error('Error loading brand settings from localStorage', err);
+      }
+    }
+    return DEFAULT_BRAND_SETTINGS;
+  });
+
+  const updateBrandSettings = (updater: Partial<BrandSettings> | ((prev: BrandSettings) => BrandSettings)) => {
+    setBrandSettingsState((prev) => {
+      const next = typeof updater === 'function' ? updater(prev) : { ...prev, ...updater };
+      try {
+        localStorage.setItem('zion_brand_settings', JSON.stringify(next));
+      } catch (e) {
+        console.error('Failed to save brand settings to localStorage', e);
+      }
+      return next;
+    });
+  };
+
+  const resetBrandSettings = () => {
+    setBrandSettingsState(DEFAULT_BRAND_SETTINGS);
+    try {
+      localStorage.removeItem('zion_brand_settings');
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   // Sync theme to <html> element
   useEffect(() => {
@@ -199,20 +303,101 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const logout = () => {
+    setIsAdminAuthenticated(false);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('zion_admin_logged_in');
+    }
+    setCurrentUser(null);
+    setActiveRoute('home');
+    showNotification('Sessão encerrada com sucesso.', 'info');
+  };
+
+  const loginAdmin = (inputEmail: string, inputPass: string) => {
+    const normInputEmail = inputEmail.trim().toLowerCase();
+    const normSavedEmail = adminCredentials.email.trim().toLowerCase();
+
+    if (normInputEmail === normSavedEmail && inputPass === adminCredentials.password) {
+      setIsAdminAuthenticated(true);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('zion_admin_logged_in', 'true');
+      }
+      const adminUser: User = {
+        id: 'usr_admin',
+        name: 'Administrador Master',
+        email: adminCredentials.email,
+        role: 'ADMIN',
+        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+      };
+      setCurrentUser(adminUser);
+      showNotification('Acesso autorizado! Bem-vindo ao Painel Administrativo Zion.', 'success');
+      setActiveRoute('admin');
+      return { success: true };
+    } else {
+      showNotification('E-mail ou senha de administrador incorretos. Verifique suas credenciais.', 'error');
+      return { success: false, message: 'E-mail ou senha incorretos.' };
+    }
+  };
+
+  const updateAdminCredentials = (newEmail: string, newPassword: string) => {
+    if (!newEmail || !newEmail.includes('@')) {
+      showNotification('Informe um e-mail válido.', 'error');
+      return { success: false, message: 'E-mail inválido.' };
+    }
+    if (!newPassword || newPassword.length < 4) {
+      showNotification('A senha deve conter pelo menos 4 caracteres.', 'error');
+      return { success: false, message: 'Senha muito curta (mínimo 4 caracteres).' };
+    }
+
+    const updated = {
+      email: newEmail.trim(),
+      password: newPassword,
+      updatedAt: new Date().toISOString(),
+    };
+
+    setAdminCredentials({ email: updated.email, password: updated.password });
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('zion_admin_auth', JSON.stringify(updated));
+    }
+
+    if (currentUser && currentUser.role === 'ADMIN') {
+      setCurrentUser((prev) => (prev ? { ...prev, email: updated.email } : prev));
+    }
+
+    showNotification(`Credenciais atualizadas com sucesso! Novo login: ${updated.email}`, 'success');
+    return { success: true };
+  };
+
+  const resetAdminCredentials = () => {
+    setAdminCredentials(DEFAULT_ADMIN_CREDS);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('zion_admin_auth', JSON.stringify(DEFAULT_ADMIN_CREDS));
+    }
+    if (currentUser && currentUser.role === 'ADMIN') {
+      setCurrentUser((prev) => (prev ? { ...prev, email: DEFAULT_ADMIN_CREDS.email } : prev));
+    }
+    showNotification('Credenciais restauradas para o padrão: admin@admin.com / admin@admin.com', 'info');
+  };
+
   const quickLoginAs = (roleKey: 'admin' | 'seller' | 'client' | 'guest') => {
     if (roleKey === 'guest') {
-      setCurrentUser(null);
-      showNotification('Você agora está navegando como Visitante Público.', 'info');
-      setActiveRoute('home');
+      logout();
       return;
     }
-    const user = DEMO_USERS[roleKey];
-    if (user) {
-      setCurrentUser(user);
-      showNotification(`Sessão iniciada como: ${user.name} (${user.role})`, 'success');
-      if (roleKey === 'admin') setActiveRoute('admin');
-      else if (roleKey === 'seller') setActiveRoute('vendedor');
-      else if (roleKey === 'client') setActiveRoute('cliente');
+    if (roleKey === 'admin') {
+      setActiveRoute('admin');
+      if (!isAdminAuthenticated) {
+        showNotification('Autenticação obrigatória: digite seu login e senha de administrador.', 'info');
+      }
+      return;
+    }
+    if (roleKey === 'client') {
+      setActiveRoute('cliente');
+      return;
+    }
+    if (roleKey === 'seller') {
+      setActiveRoute('vendedor');
+      return;
     }
   };
 
@@ -594,6 +779,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addNewProduct,
         deleteProduct,
         approveCommission,
+        brandSettings,
+        updateBrandSettings,
+        resetBrandSettings,
+        adminCredentials,
+        isAdminAuthenticated,
+        loginAdmin,
+        updateAdminCredentials,
+        resetAdminCredentials,
+        logout,
       }}
     >
       {children}
