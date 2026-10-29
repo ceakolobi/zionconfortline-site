@@ -33,7 +33,7 @@ export const DEMO_USERS: Record<string, User> = {
     email: 'vendedor@demo.local',
     role: 'VENDEDOR',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-    phone: '(11) 97123-8899',
+    phone: '(47) 99220-2930',
     company: 'Zion Confort Line Vendas SP',
     permissions: ['leads.manage', 'quotes.create', 'commissions.view', 'products.view'],
   },

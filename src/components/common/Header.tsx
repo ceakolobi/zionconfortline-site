@@ -24,7 +24,7 @@ import {
   ExternalLink,
   Flame,
 } from 'lucide-react';
-import { generateWhatsAppUrl } from '../../utils/whatsapp';
+import { generateWhatsAppUrl, ZION_WHATSAPP_DISPLAY } from '../../utils/whatsapp';
 
 interface SubmenuItem {
   id: string;
@@ -213,10 +213,15 @@ export const Header: React.FC = () => {
               <Zap className="w-3.5 h-3.5 text-amber-500" />
               <span>Representante Autorizado & Soluções Integradas de Alta Eficiência</span>
             </div>
-            <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
-              <Phone className="w-3 h-3 text-amber-500" />
-              <span>(11) 97123-8899</span>
-            </div>
+            <a
+              href={headerWhatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+            >
+              <Phone className="w-3 h-3 text-emerald-500" />
+              <span>{ZION_WHATSAPP_DISPLAY}</span>
+            </a>
             <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
               <Mail className="w-3 h-3 text-amber-500" />
               <span>contato@zionconfortline.com.br</span>

@@ -10,7 +10,7 @@ import {
   CheckCircle2,
   Sparkles,
 } from 'lucide-react';
-import { generateWhatsAppUrl } from '../../utils/whatsapp';
+import { generateWhatsAppUrl, ZION_WHATSAPP_DISPLAY } from '../../utils/whatsapp';
 
 export const ContactSection: React.FC = () => {
   const { addLead, showNotification } = useApp();
@@ -76,7 +76,12 @@ export const ContactSection: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-slate-900 dark:text-white text-sm">Telefone Comercial</h4>
-                  <p className="text-slate-600 dark:text-slate-300 mt-0.5">(11) 97123-8899</p>
+                  <a
+                    href={`tel:${ZION_WHATSAPP_DISPLAY.replace(/\D/g, '')}`}
+                    className="text-slate-600 dark:text-slate-300 mt-0.5 hover:text-amber-500 block transition-colors font-medium"
+                  >
+                    {ZION_WHATSAPP_DISPLAY}
+                  </a>
                   <span className="text-[11px] text-slate-400 dark:text-slate-500">Atendimento de Segunda a Sexta das 8h às 18h</span>
                 </div>
               </div>
@@ -87,7 +92,7 @@ export const ContactSection: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-slate-900 dark:text-white text-sm">WhatsApp Oficial</h4>
-                  <p className="text-slate-600 dark:text-slate-300 mt-0.5">(11) 97123-8899</p>
+                  <p className="text-slate-600 dark:text-slate-300 mt-0.5 font-medium">{ZION_WHATSAPP_DISPLAY}</p>
                   <a
                     href={directWhatsapp}
                     target="_blank"

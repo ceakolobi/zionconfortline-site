@@ -219,9 +219,16 @@ A aplicação conta com um alternador de perfis no canto superior/inferior para 
 
 ---
 
-## 🔒 Integrações e Segurança
+## 🔒 Integrações, Atendimento e Segurança
 
+- **WhatsApp Oficial de Atendimento**: `(47) 99220-2930` (`5547992202930`) — Configurado centralizadamente em `src/utils/whatsapp.ts`.
 - **WhatsApp API Direct**: Envio de orçamentos e pedidos com mensagens contextualizadas.
+- **Acesso Administrativo**:
+  - Usuário padrão inicial: `admin@admin.com`
+  - Senha padrão inicial: `admin@admin.com`
+  - Possibilidade de troca de usuário e senha diretamente dentro do painel administrativo com persistência em armazenamento local.
+- **Portais Bloqueados para Implementação Futura**:
+  - Portal do Cliente (`/cliente`) e Portal do Vendedor (`/vendedor`) exibem tela de aviso com link direto para solicitação de acesso via WhatsApp oficial.
 - **LGPD & Privacidade**: Modal de consentimento de cookies e políticas de privacidade em conformidade com a legislação brasileira.
 - **Resiliência de Mídia**: Tratamento inteligente para vídeos em navegadores móveis (`playsInline`, `muted`, `autoPlay`) e fallbacks de imagem automáticos.
 
@@ -230,4 +237,5 @@ A aplicação conta com um alternador de perfis no canto superior/inferior para 
 ## 📄 Licença e Créditos
 
 Desenvolvido para **Zion Confort Line Solutions**.  
+WhatsApp de Atendimento: **(47) 99220-2930**  
 Todos os direitos reservados © 2026.

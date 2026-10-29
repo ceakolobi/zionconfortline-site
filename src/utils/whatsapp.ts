@@ -1,5 +1,7 @@
 // Centralized WhatsApp link builder with contextual messages
-export const ZION_WHATSAPP_NUMBER = '5511971238899'; // Default official Zion Confort Line contact number
+export const ZION_WHATSAPP_NUMBER = '5547992202930'; // Número oficial de atendimento Zion Confort Line: 47 992202930
+export const ZION_WHATSAPP_DISPLAY = '(47) 99220-2930';
+export const ZION_WHATSAPP_RAW = '47 992202930';
 
 export type WhatsAppActionType =
   | 'geral'

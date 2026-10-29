@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { Lock, ShieldAlert, ArrowLeft, MessageCircle, ShieldCheck, Clock, KeyRound } from 'lucide-react';
+import { ZION_WHATSAPP_NUMBER, ZION_WHATSAPP_DISPLAY } from '../../utils/whatsapp';
 
 interface LockedAccessScreenProps {
   area?: 'cliente' | 'vendedor';
@@ -79,13 +80,13 @@ export const LockedAccessScreen: React.FC<LockedAccessScreenProps> = ({ area = '
             </button>
 
             <a
-              href="https://wa.me/5511971238899?text=Ol%C3%A1!%20Gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20meu%20acesso%20ao%20portal%20Zion."
+              href={`https://wa.me/${ZION_WHATSAPP_NUMBER}?text=${encodeURIComponent(`Olá! Gostaria de informações sobre meu acesso ao portal Zion Confort Line.`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-colors"
             >
               <MessageCircle className="w-4 h-4" />
-              <span>Solicitar Acesso via WhatsApp</span>
+              <span>Solicitar Acesso via WhatsApp ({ZION_WHATSAPP_DISPLAY})</span>
             </a>
 
             <div className="pt-2">

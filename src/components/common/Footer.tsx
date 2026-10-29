@@ -11,7 +11,7 @@ import {
   ArrowRight,
   ExternalLink,
 } from 'lucide-react';
-import { generateWhatsAppUrl } from '../../utils/whatsapp';
+import { generateWhatsAppUrl, ZION_WHATSAPP_DISPLAY } from '../../utils/whatsapp';
 import { LgpdModal } from '../legal/LgpdModal';
 
 export const Footer: React.FC = () => {
@@ -138,10 +138,15 @@ export const Footer: React.FC = () => {
           </p>
 
           <div className="pt-2 space-y-2 text-slate-300">
-            <div className="flex items-center gap-2.5">
-              <Phone className="w-4 h-4 text-amber-400 flex-shrink-0" />
-              <span>(11) 97123-8899 (Atendimento Comercial e WhatsApp)</span>
-            </div>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2.5 hover:text-emerald-400 transition-colors"
+            >
+              <Phone className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+              <span>{ZION_WHATSAPP_DISPLAY} (Atendimento Comercial e WhatsApp)</span>
+            </a>
             <div className="flex items-center gap-2.5">
               <Mail className="w-4 h-4 text-amber-400 flex-shrink-0" />
               <span>contato@zionconfortline.com.br</span>
